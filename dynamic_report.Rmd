@@ -1,0 +1,100 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+library(tidyverse)
+library(magick)
+
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSbqICsnauOgFuy8YcfKDdfFPSx3WVemKL8uUVb7UmRIo8mLhLH00Tw5--J44XsIn0xPqFqrWCR9-Ap/pub?output=csv") 
+  
+  
+latest_data <- logged_data %>%  
+  rename(time_submitted = 1,
+         transport_type = 2,
+         time_spent_on_transport = 3,
+         number_of_advertisments = 4,
+         type_of_advertisment = 5)
+
+
+```
+
+```{css}
+body {
+  color: #00FFFF;
+  background-color: #1E1E2F;
+  font-family: 'Roboto Slab', serif;
+}
+
+h1 { 
+  font-weight : bold;
+  text-decoration : underline;
+}
+
+h2 { 
+  font-weight : bold;
+}
+
+img {
+  border: 5px solid pink;
+  border-radius: 5%;
+}
+
+}
+```
+
+## A report on public transport usage and advertisement exposure:
+
+In this dynamic report we are tracking the type of public transport used, the type of advertisements seen during the trips and finally the number of total advertisements seen during each ride being 3-4. Furthermore we see that the 
+"other" transport type had zero ads seen followed by the ferry.  
+
+
+
+
+
+
+```{r fig.width = 12, fig.height = 4}
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = transport_type, fill = number_of_advertisments)) +
+  labs(
+    title = "Transport type vs number of advertisements",
+    x = "Transport type",
+    y = "Number of trips",
+    fill = "Ads seen"
+  )
+
+```
+
+For this bar graph we are looking at the number of trips taken by different public transport types versus the total number of advertisements seen during those trips. We see the bus take the most number of trips as well as have the largest number of advertisements seen in one trip.  
+
+```{r fig.width = 12, fig.height = 4}
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = transport_type, fill = type_of_advertisment)) +
+  labs(
+    title = "Transport type vs type of advertisment",
+    x = "transport type",
+    y = "number of trips",
+    fill = "type of advertisement"
+    )
+
+```
+
+For this plot we are looking at the number of trips taken by different public transport types versus the type advertisements seen during those trips. We see that education oriented ads were only seen on buses. Furthermore no financial related adds were seen on ferries, trains and other forms of public transport.   
+
+```{r}
+shortest_transport_ride <- min(latest_data$time_spent_on_transport, na.rm = TRUE)
+longest_transport_ride <- max(latest_data$time_spent_on_transport, na.rm = TRUE)
+
+
+```
+## Extra data:
+The shortest ride on public transport recorded so far is `r shortest_transport_ride` min. 
+
+The longest ride on public transport recorded so far is `r longest_transport_ride` min.
+
